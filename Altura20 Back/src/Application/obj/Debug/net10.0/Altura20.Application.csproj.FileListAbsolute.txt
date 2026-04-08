@@ -1,0 +1,15 @@
+C:\Altura20 Claude\Altura20 Back\src\Application\bin\Debug\net10.0\Altura20.Application.deps.json
+C:\Altura20 Claude\Altura20 Back\src\Application\bin\Debug\net10.0\Altura20.Application.dll
+C:\Altura20 Claude\Altura20 Back\src\Application\bin\Debug\net10.0\Altura20.Application.pdb
+C:\Altura20 Claude\Altura20 Back\src\Application\bin\Debug\net10.0\Altura20.Domain.dll
+C:\Altura20 Claude\Altura20 Back\src\Application\bin\Debug\net10.0\Altura20.Domain.pdb
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.csproj.AssemblyReference.cache
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.AssemblyInfoInputs.cache
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.AssemblyInfo.cs
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.csproj.CoreCompileInputs.cache
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.39046D1B.Up2Date
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.dll
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\refint\Altura20.Application.dll
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.pdb
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\ref\Altura20.Application.dll
