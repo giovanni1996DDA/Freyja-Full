@@ -171,3 +171,6 @@ C:\Altura20 Claude\Altura20 Back\src\Api\bin\Debug\net10.0\Npgsql.EntityFramewor
 C:\Altura20 Claude\Altura20 Back\src\Api\bin\Debug\net10.0\Scalar.AspNetCore.dll
 C:\Altura20 Claude\Altura20 Back\src\Api\bin\Debug\net10.0\BCrypt.Net-Next.dll
 C:\Altura20 Claude\Altura20 Back\src\Api\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Altura20 Claude\Altura20 Back\src\Api\obj\Debug\net10.0\Altura20.Api.sourcelink.json
+C:\Altura20 Claude\Altura20 Back\src\Api\bin\Debug\net10.0\Altura20.Api.xml
+C:\Altura20 Claude\Altura20 Back\src\Api\obj\Debug\net10.0\Altura20.Api.xml

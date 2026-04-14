@@ -1,0 +1,422 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Altura20.Api</name>
+    </assembly>
+    <members>
+        <member name="T:Altura20.Api.Controllers.PermissionsController">
+            <summary>
+            Manages the Permission leaf nodes of the authorization composite.
+            Permissions are atomic access grants identified by a unique Code (e.g. INVENTORY_READ).
+            They can be assigned directly to Users or grouped inside Roles.
+            </summary>
+        </member>
+        <member name="M:Altura20.Api.Controllers.PermissionsController.#ctor(MediatR.ISender)">
+            <summary>
+            Manages the Permission leaf nodes of the authorization composite.
+            Permissions are atomic access grants identified by a unique Code (e.g. INVENTORY_READ).
+            They can be assigned directly to Users or grouped inside Roles.
+            </summary>
+        </member>
+        <member name="M:Altura20.Api.Controllers.PermissionsController.GetAll(System.Threading.CancellationToken)">
+            <summary>
+            Returns all active permissions in the system.
+            </summary>
+            <remarks>
+            Use this list to pick permission IDs when building or updating a Role or User composite.
+            Only active permissions are returned; deactivated ones are excluded.
+            </remarks>
+            <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+            <response code="200">List of active permissions.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.PermissionsController.GetChildPermissions(System.Guid,System.Threading.CancellationToken)">
+             <summary>
+             Returns the permissions directly assigned to a User or Role.
+             </summary>
+             <remarks>
+             The <c>parentId</c> is resolved dynamically:
+             - If it matches an active **User**, the user's direct permissions are returned (does not include permissions inherited via roles).
+             - If it matches an active **Role**, the role's direct permissions are returned (does not recurse into child roles).
+            
+             To get the fully resolved (flattened) permission set of a user, use the login token which contains all resolved IDs.
+             </remarks>
+             <param name="parentId">GUID of the User or Role whose direct permissions you want to inspect.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="200">Permissions directly assigned to the given parent.</response>
+             <response code="404">No active user or role found with the provided ID.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.PermissionsController.Create(Altura20.Application.Features.Permissions.Commands.CreatePermission.CreatePermissionCommand,System.Threading.CancellationToken)">
+             <summary>
+             Creates a new permission.
+             </summary>
+             <remarks>
+             Both <c>code</c> and <c>name</c> must be unique across all permissions.
+             The <c>code</c> is automatically normalized to uppercase and should follow the convention
+             <c>MODULE_ACTION</c> (e.g. <c>INVENTORY_READ</c>, <c>PRODUCTION_WRITE</c>).
+            
+             **Request body example:**
+             ```json
+             {
+               "code": "INVENTORY_READ",
+               "name": "Read Inventory",
+               "description": "Allows querying lot balances and stock levels"
+             }
+             ```
+             </remarks>
+             <param name="command">Permission data. <c>code</c> and <c>name</c> are required.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="201">Permission created successfully. Returns the new permission.</response>
+             <response code="400">Validation failed or <c>code</c>/<c>name</c> already exists.</response>
+        </member>
+        <member name="T:Altura20.Api.Controllers.RolesController">
+            <summary>
+            Manages Roles, which are composite nodes in the authorization tree.
+            A Role can contain Permissions (leaves) and other Roles (child composites),
+            enabling hierarchical permission grouping with unlimited nesting depth.
+            </summary>
+        </member>
+        <member name="M:Altura20.Api.Controllers.RolesController.#ctor(MediatR.ISender)">
+            <summary>
+            Manages Roles, which are composite nodes in the authorization tree.
+            A Role can contain Permissions (leaves) and other Roles (child composites),
+            enabling hierarchical permission grouping with unlimited nesting depth.
+            </summary>
+        </member>
+        <member name="M:Altura20.Api.Controllers.RolesController.GetAll(System.Int32,System.Threading.CancellationToken)">
+             <summary>
+             Returns all root roles with their composite tree resolved up to the requested depth.
+             </summary>
+             <remarks>
+             Only **root roles** are returned — roles that are not assigned as a child of any other role.
+             Child roles appear nested under their parents according to <c>depth</c>.
+            
+             **Depth behavior:**
+             | depth | Result |
+             |-------|--------|
+             | 0 | Root role with its direct permissions. `childRoles` is always empty. |
+             | 1 | Root role + its direct children (each with their own permissions). |
+             | N | Recurses N levels into the composite tree. |
+            
+             **Response shape at depth=1:**
+             ```json
+             [
+               {
+                 "id": "...",
+                 "name": "Admin",
+                 "permissions": [{ "code": "USERS_WRITE", ... }],
+                 "childRoles": [
+                   {
+                     "name": "Supervisor",
+                     "permissions": [{ "code": "PRODUCTION_READ", ... }],
+                     "childRoles": []
+                   }
+                 ]
+               }
+             ]
+             ```
+             </remarks>
+             <param name="depth">
+             Number of child role levels to include. Default is <c>0</c> (root only).
+             </param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="200">List of root roles resolved to the requested depth.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.RolesController.GetByName(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Returns a single role by its exact name, resolved up to the requested depth.
+            </summary>
+            <remarks>
+            Name matching is case-sensitive. The <c>depth</c> parameter controls how many
+            levels of child roles are nested in the response (same semantics as <c>GET /api/roles</c>).
+            </remarks>
+            <param name="name">Exact name of the role to find.</param>
+            <param name="depth">Number of child role levels to include. Default is <c>0</c>.</param>
+            <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+            <response code="200">Role found. Returns the role resolved to the requested depth.</response>
+            <response code="404">No active role found with the given name.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.RolesController.GetChildRoles(System.Guid,System.Int32,System.Threading.CancellationToken)">
+             <summary>
+             Returns the roles directly assigned to a User or Role, resolved up to the requested depth.
+             </summary>
+             <remarks>
+             The <c>parentId</c> is resolved dynamically:
+             - If it matches an active **User**, returns the roles directly assigned to that user.
+             - If it matches an active **Role**, returns that role's child roles.
+            
+             The <c>depth</c> parameter controls how many additional levels of children are nested
+             inside each returned role (same semantics as `GET /api/roles`).
+             </remarks>
+             <param name="parentId">GUID of the User or Role whose roles you want to inspect.</param>
+             <param name="depth">Number of child role levels to include in each result. Default is <c>0</c>.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="200">Roles assigned to the given parent, resolved to the requested depth.</response>
+             <response code="404">No active user or role found with the provided ID.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.RolesController.Create(Altura20.Application.Features.Roles.Commands.CreateRole.CreateRoleCommand,System.Threading.CancellationToken)">
+             <summary>
+             Creates a new role with no permissions or child roles.
+             </summary>
+             <remarks>
+             Creates an empty role. Use `PUT /api/roles/{roleId}` to assign its composite,
+             or use the additive `POST /api/roles/{roleId}/permissions` and `POST /api/roles/{roleId}/roles` endpoints.
+            
+             **Request body example:**
+             ```json
+             {
+               "name": "Warehouse Operator",
+               "description": "Access to inventory intake and stock queries"
+             }
+             ```
+             </remarks>
+             <param name="command">Role data. <c>name</c> is required and must be unique.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="201">Role created. Returns the new role with empty permissions and childRoles.</response>
+             <response code="400">Validation failed or a role with the same name already exists.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.RolesController.Update(System.Guid,Altura20.Api.Controllers.UpdateRoleRequest,System.Threading.CancellationToken)">
+             <summary>
+             Replaces the full composite of a role (info + permissions + child roles).
+             </summary>
+             <remarks>
+             This is a **full replacement** operation: all existing permission and child role assignments
+             are deleted and rebuilt from the arrays provided in the request.
+             Sending an empty array clears all relations of that type.
+            
+             **Constraints:**
+             - A role cannot be a child of itself.
+             - All provided permission and child role IDs must exist and be active.
+            
+             **Request body example:**
+             ```json
+             {
+               "name": "Supervisor",
+               "description": "Operational oversight role",
+               "permissionIds": ["3fa85f64-5717-4562-b3fc-2c963f66afa6"],
+               "childRoleIds": ["7b1e4c2a-8f3d-4a9b-b2e1-1c5d8f7a3b6e"]
+             }
+             ```
+            
+             The response always returns the role at depth=0 (direct permissions and child role list without further nesting).
+             </remarks>
+             <param name="roleId">GUID of the role to update.</param>
+             <param name="request">New role info and composite definition.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="200">Role updated. Returns the role with its new composite at depth=0.</response>
+             <response code="400">Validation failed, circular reference detected, or invalid IDs provided.</response>
+             <response code="404">Role not found.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.RolesController.AssignPermissions(System.Guid,System.Collections.Generic.IEnumerable{System.Guid},System.Threading.CancellationToken)">
+             <summary>
+             Additively assigns permissions to a role.
+             </summary>
+             <remarks>
+             **Additive** — only the listed permissions are added. Existing permissions are preserved.
+             Permissions already assigned to the role are silently ignored (no duplicate error).
+            
+             To fully replace the composite, use `PUT /api/roles/{roleId}` instead.
+            
+             **Request body example:**
+             ```json
+             ["3fa85f64-5717-4562-b3fc-2c963f66afa6", "9c2b1a7f-4d8e-4b3c-a1f2-5e6d7c8b9a0f"]
+             ```
+             </remarks>
+             <param name="roleId">GUID of the role to assign permissions to.</param>
+             <param name="permissionIds">Array of permission GUIDs to add.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="204">Permissions assigned successfully.</response>
+             <response code="400">Role not found or one or more permission IDs are invalid/inactive.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.RolesController.AssignChildRoles(System.Guid,System.Collections.Generic.IEnumerable{System.Guid},System.Threading.CancellationToken)">
+             <summary>
+             Additively assigns child roles to a role, building the composite hierarchy.
+             </summary>
+             <remarks>
+             **Additive** — only the listed roles are added as children. Existing child roles are preserved.
+             A role cannot be a child of itself (direct self-reference is rejected).
+            
+             To fully replace the composite, use `PUT /api/roles/{roleId}` instead.
+            
+             **Request body example:**
+             ```json
+             ["7b1e4c2a-8f3d-4a9b-b2e1-1c5d8f7a3b6e"]
+             ```
+             </remarks>
+             <param name="roleId">GUID of the parent role.</param>
+             <param name="childRoleIds">Array of role GUIDs to nest as children.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="204">Child roles assigned successfully.</response>
+             <response code="400">Role not found, self-reference detected, or invalid child role IDs.</response>
+        </member>
+        <member name="T:Altura20.Api.Controllers.UpdateRoleRequest">
+            <summary>
+            Request body for updating a role's info and composite.
+            All permission and child role assignments are replaced with the provided arrays.
+            </summary>
+        </member>
+        <member name="M:Altura20.Api.Controllers.UpdateRoleRequest.#ctor(System.String,System.String,System.Collections.Generic.IEnumerable{System.Guid},System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Request body for updating a role's info and composite.
+            All permission and child role assignments are replaced with the provided arrays.
+            </summary>
+        </member>
+        <member name="T:Altura20.Api.Controllers.UsersController">
+            <summary>
+            Manages Users, which are the root composite nodes of the authorization tree.
+            A User can hold direct Permissions (leaves) and Roles (composites).
+            The resolved permission set is the union of all direct permissions and all permissions
+            inherited recursively through the assigned role hierarchy.
+            </summary>
+        </member>
+        <member name="M:Altura20.Api.Controllers.UsersController.#ctor(MediatR.ISender)">
+            <summary>
+            Manages Users, which are the root composite nodes of the authorization tree.
+            A User can hold direct Permissions (leaves) and Roles (composites).
+            The resolved permission set is the union of all direct permissions and all permissions
+            inherited recursively through the assigned role hierarchy.
+            </summary>
+        </member>
+        <member name="M:Altura20.Api.Controllers.UsersController.Update(System.String,Altura20.Api.Controllers.UpdateUserRequest,System.Threading.CancellationToken)">
+             <summary>
+             Replaces the full composite of a user (profile info + direct permissions + roles).
+             </summary>
+             <remarks>
+             This is a **full replacement** operation:
+             - User profile fields (name, lastName, email) are updated.
+             - All existing direct permission and role assignments are deleted and rebuilt
+               from the arrays provided in the request. Sending an empty array clears all relations of that type.
+            
+             **Does not update:** username or password — those require separate dedicated flows.
+            
+             **Constraints:**
+             - Email must be unique across all users.
+             - All provided permission and role IDs must exist and be active.
+            
+             **Request body example:**
+             ```json
+             {
+               "name": "Juan",
+               "lastName": "Diaz",
+               "email": "juan@empresa.com",
+               "permissionIds": ["3fa85f64-5717-4562-b3fc-2c963f66afa6"],
+               "roleIds": ["7b1e4c2a-8f3d-4a9b-b2e1-1c5d8f7a3b6e"]
+             }
+             ```
+            
+             The response includes resolved `permissionIds` — the full flattened set from direct permissions
+             plus all permissions inherited through roles.
+             </remarks>
+             <param name="username">Case-sensitive username of the user to update.</param>
+             <param name="request">New profile info and composite definition.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="200">User updated. Returns the updated user with resolved composite.</response>
+             <response code="400">Validation failed, email already in use, or invalid IDs provided.</response>
+             <response code="404">User not found or inactive.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.UsersController.AssignPermissions(System.String,System.Collections.Generic.IEnumerable{System.Guid},System.Threading.CancellationToken)">
+             <summary>
+             Additively assigns direct permissions to a user.
+             </summary>
+             <remarks>
+             **Additive** — only the listed permissions are added. Existing direct permissions are preserved.
+             These are permissions held directly by the user, independent of any role assignment.
+            
+             To fully replace the composite (permissions + roles together), use `PUT /api/users/{username}` instead.
+            
+             **Request body example:**
+             ```json
+             ["3fa85f64-5717-4562-b3fc-2c963f66afa6"]
+             ```
+             </remarks>
+             <param name="username">Case-sensitive username of the target user.</param>
+             <param name="permissionIds">Array of permission GUIDs to add directly to the user.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="204">Permissions assigned successfully.</response>
+             <response code="400">User not found or one or more permission IDs are invalid/inactive.</response>
+        </member>
+        <member name="M:Altura20.Api.Controllers.UsersController.AssignRoles(System.String,System.Collections.Generic.IEnumerable{System.Guid},System.Threading.CancellationToken)">
+             <summary>
+             Additively assigns roles to a user.
+             </summary>
+             <remarks>
+             **Additive** — only the listed roles are added. Existing role assignments are preserved.
+             Assigning a role makes the user inherit all permissions from that role and its entire child hierarchy.
+            
+             To fully replace the composite (permissions + roles together), use `PUT /api/users/{username}` instead.
+            
+             **Request body example:**
+             ```json
+             ["7b1e4c2a-8f3d-4a9b-b2e1-1c5d8f7a3b6e"]
+             ```
+             </remarks>
+             <param name="username">Case-sensitive username of the target user.</param>
+             <param name="roleIds">Array of role GUIDs to assign to the user.</param>
+             <param name="cancellationToken">Propagates cancellation from the HTTP request.</param>
+             <response code="204">Roles assigned successfully.</response>
+             <response code="400">User not found or one or more role IDs are invalid/inactive.</response>
+        </member>
+        <member name="T:Altura20.Api.Controllers.UpdateUserRequest">
+            <summary>
+            Request body for updating a user's profile and composite.
+            All direct permission and role assignments are replaced with the provided arrays.
+            Email is stored in lowercase; username and password are not updatable here.
+            </summary>
+        </member>
+        <member name="M:Altura20.Api.Controllers.UpdateUserRequest.#ctor(System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.Guid},System.Collections.Generic.IEnumerable{System.Guid})">
+            <summary>
+            Request body for updating a user's profile and composite.
+            All direct permission and role assignments are replaced with the provided arrays.
+            Email is stored in lowercase; username and password are not updatable here.
+            </summary>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
+            <summary>
+            Generates a documentation comment ID for a type.
+            Example: T:Namespace.Outer+Inner`1 becomes T:Namespace.Outer.Inner`1
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.PropertyInfo)">
+            <summary>
+            Generates a documentation comment ID for a property.
+            Example: P:Namespace.ContainingType.PropertyName or for an indexer P:Namespace.ContainingType.Item(System.Int32)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type,System.String)">
+            <summary>
+            Generates a documentation comment ID for a property given its container type and property name.
+            Example: P:Namespace.ContainingType.PropertyName
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.MethodInfo)">
+            <summary>
+            Generates a documentation comment ID for a method (or constructor).
+            For example:
+              M:Namespace.ContainingType.MethodName(ParamType1,ParamType2)~ReturnType
+              M:Namespace.ContainingType.#ctor(ParamType)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.GetTypeDocId(System.Type,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a documentation ID string for a type.
+            This method handles nested types (replacing '+' with '.'),
+            generic types, arrays, pointers, by-ref types, and generic parameters.
+            The <paramref name="includeGenericArguments"/> flag controls whether
+            constructed generic type arguments are emitted, while <paramref name="omitGenericArity"/>
+            controls whether the generic arity marker (e.g. "`1") is appended.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.NormalizeDocId(System.String)">
+            <summary>
+            Normalizes a documentation comment ID to match the compiler-style format.
+            Strips the return type suffix for ordinary methods but retains it for conversion operators.
+            </summary>
+            <param name="docId">The documentation comment ID to normalize.</param>
+            <returns>The normalized documentation comment ID.</returns>
+        </member>
+    </members>
+</doc>

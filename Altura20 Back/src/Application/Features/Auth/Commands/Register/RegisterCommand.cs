@@ -1,11 +1,18 @@
+using Altura20.Application.Interfaces;
 using Altura20.Domain.Common;
-using Altura20.Domain.Enums;
 using MediatR;
 
 namespace Altura20.Application.Features.Auth.Commands.Register;
 
 public record RegisterCommand(
-    string Email,
+    string Username,
     string Password,
-    string FullName,
-    UserRole Role) : IRequest<Result>;
+    string Name,
+    string LastName,
+    string Email) : IRequest<Result>, IAuthorizedRequest
+{
+    public IEnumerable<string> RequiredPermissions =>
+    [
+        // Aca van los permisos
+    ];
+}

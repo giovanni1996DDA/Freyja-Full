@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Altura20.Application.Features.Auth.Commands.Login;
 
-public record LoginCommand(string Email, string Password) : IRequest<Result<TokenResponse>>;
+public record LoginCommand(string Username, string Password) : IRequest<Result<TokenResponse>>;

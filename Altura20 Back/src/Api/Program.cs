@@ -34,6 +34,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader()));
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
@@ -63,13 +69,24 @@ app.UseExceptionHandler(exceptionHandlerApp =>
         }
 
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        await context.Response.WriteAsJsonAsync(new { error = "An unexpected error occurred." });
+
+        var isDev = context.RequestServices
+            .GetRequiredService<IWebHostEnvironment>()
+            .IsDevelopment();
+
+        var body = isDev && exception is not null
+            ? new { error = exception.GetType().Name, detail = (string?)exception.Message, trace = exception.StackTrace }
+            : new { error = "An unexpected error occurred.", detail = (string?)null, trace = (string?)null };
+
+        await context.Response.WriteAsJsonAsync(body);
     }));
 
 app.UseHttpsRedirection();
+app.UseCors();
 
-// El orden importa: primero autenticar (¿quién sos?), luego autorizar (¿podés hacer esto?)
+//  Quien sos?
 app.UseAuthentication();
+// Que podes hacer?
 app.UseAuthorization();
 
 app.MapControllers();

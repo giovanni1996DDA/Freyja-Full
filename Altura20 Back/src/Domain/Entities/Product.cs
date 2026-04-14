@@ -56,15 +56,7 @@ public class Product : BaseEntity
         return Result.Success();
     }
 
-    public void AddStock(int quantity)
-    {
-        Stock += quantity;
-        SetUpdatedAt();
-    }
+    public void AddStock(int quantity) { Stock += quantity; SetUpdatedAt(); }
 
-    public void Deactivate()
-    {
-        IsActive = false;
-        SetUpdatedAt();
-    }
+    public void Deactivate() { IsActive = false; SetUpdatedAt(); }
 }

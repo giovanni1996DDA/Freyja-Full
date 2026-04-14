@@ -9,3 +9,4 @@ C:\Altura20 Claude\Altura20 Back\src\Domain\obj\Debug\net10.0\Altura20.Domain.dl
 C:\Altura20 Claude\Altura20 Back\src\Domain\obj\Debug\net10.0\refint\Altura20.Domain.dll
 C:\Altura20 Claude\Altura20 Back\src\Domain\obj\Debug\net10.0\Altura20.Domain.pdb
 C:\Altura20 Claude\Altura20 Back\src\Domain\obj\Debug\net10.0\ref\Altura20.Domain.dll
+C:\Altura20 Claude\Altura20 Back\src\Domain\obj\Debug\net10.0\Altura20.Domain.sourcelink.json
