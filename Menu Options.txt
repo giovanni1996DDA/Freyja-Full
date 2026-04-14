@@ -1,0 +1,77 @@
+Home (Executive Dashboard)
+
+Administration
+  Security
+    Roles & Permissions
+  Data Migration
+    Historical Import
+
+Master Data
+  Articles
+    Article Groups
+    Items
+    Item Detail
+      General
+      UoM Conversions
+      Stock Policy
+
+Inventory
+  Inbound
+    Inventory Intake
+  Stock
+    Stock by Item / Lot
+    Lot Detail
+      Change Lot Status
+      Record Loss / Waste
+  Counts
+    Cycle Counts
+
+Production
+  Recipes
+    BOM Recipes
+  Runs
+    Production Runs
+    Production Run Detail
+      WIP Input
+      Output Declaration
+      Extra Yield
+  Exceptions
+    Phantom Lot Override
+    Tolerance Approval
+
+Procurement
+  Planning
+    JIT Suggestions
+    Replenishment Suggestions
+
+Sales
+  Order Intake
+    OCR Order Capture
+  Review
+    Quarantine Orders
+
+Pricing & Billing
+  Pricing
+    Weekly Bet Matrix
+  Billing
+    Invoice / Receipt Issuance
+
+Labeling
+  Labels
+    Print Finished Product Label
+    Reprint Label
+
+Logistics
+  Dispatch
+    Route Planning
+    Pick & Pack Validation
+    Proof of Delivery
+
+Audit & Compliance
+  Monitoring
+    Daily Close Monitor
+    Daily Consolidation Monitor
+    Daily Ledger History
+
+
+  

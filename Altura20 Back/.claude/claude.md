@@ -72,6 +72,10 @@ This ERP must support inventory traceability by lot, production driven by BOM an
 - Commit format: `type: description` (feat, fix, refactor, test, docs)
 - Run tests before committing
 
+## Domain Conventions
+- All primary keys are the Entities ID.
+- All entities must have their primary ID's as Guid.
+
 ## Use Cases by Module
 
 ### UC-01 — Configure Roles and Permissions

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hBxaePBWP1c=",
+  "dgSpecHash": "JBTgUDHEt7E=",
   "success": true,
-  "projectFilePath": "c:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj",
+  "projectFilePath": "C:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\JUAN_\\.nuget\\packages\\fluentvalidation\\12.1.1\\fluentvalidation.12.1.1.nupkg.sha512",
     "C:\\Users\\JUAN_\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\12.1.1\\fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",

@@ -10,7 +10,7 @@ namespace Altura20.Infrastructure.Services;
 
 public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGenerator
 {
-    public string GenerateToken(User user)
+    public string GenerateToken(User user, IEnumerable<Guid> permissionIds, IEnumerable<string> permissionCodes, IEnumerable<string> roleNames)
     {
         var jwtSettings = configuration.GetSection("JwtSettings");
         var secretKey = jwtSettings["SecretKey"]!;
@@ -21,14 +21,22 @@ public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGenerato
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.FullName),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.UniqueName, user.Username),
+            new(JwtRegisteredClaimNames.Email, user.Email),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        foreach (var role in roleNames)
+            claims.Add(new Claim(ClaimTypes.Role, role));
+
+        foreach (var permId in permissionIds)
+            claims.Add(new Claim("permission", permId.ToString()));
+
+        foreach (var code in permissionCodes)
+            claims.Add(new Claim("permCode", code));
 
         var token = new JwtSecurityToken(
             issuer: issuer,

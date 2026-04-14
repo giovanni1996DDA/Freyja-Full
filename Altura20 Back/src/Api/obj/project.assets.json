@@ -1238,7 +1238,10 @@
         },
         "runtime": {
           "bin/placeholder/Altura20.Infrastructure.dll": {}
-        }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       }
     }
   },
@@ -3497,11 +3500,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Altura20 Claude\\Altura20 Back\\src\\Api\\Altura20.Api.csproj",
+      "projectUniqueName": "C:\\Altura20 Claude\\Altura20 Back\\src\\Api\\Altura20.Api.csproj",
       "projectName": "Altura20.Api",
-      "projectPath": "c:\\Altura20 Claude\\Altura20 Back\\src\\Api\\Altura20.Api.csproj",
+      "projectPath": "C:\\Altura20 Claude\\Altura20 Back\\src\\Api\\Altura20.Api.csproj",
       "packagesPath": "C:\\Users\\JUAN_\\.nuget\\packages\\",
-      "outputPath": "c:\\Altura20 Claude\\Altura20 Back\\src\\Api\\obj\\",
+      "outputPath": "C:\\Altura20 Claude\\Altura20 Back\\src\\Api\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -3523,8 +3526,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "c:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj": {
-              "projectPath": "c:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj"
+            "C:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj": {
+              "projectPath": "C:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj"
             },
             "C:\\Altura20 Claude\\Altura20 Back\\src\\Infrastructure\\Altura20.Infrastructure.csproj": {
               "projectPath": "C:\\Altura20 Claude\\Altura20 Back\\src\\Infrastructure\\Altura20.Infrastructure.csproj"

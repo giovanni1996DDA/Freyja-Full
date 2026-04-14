@@ -1,7 +1,20 @@
+using Altura20.Application.Features.Permissions;
+using Altura20.Application.Features.Roles;
+
 namespace Altura20.Application.Features.Auth;
 
-public record LoginRequest(string Email, string Password);
+public record LoginRequest(string Username, string Password);
 
-public record RegisterRequest(string Email, string Password, string FullName, string Role);
+public record RegisterRequest(string Username, string Password, string Name, string LastName, string Email);
 
-public record TokenResponse(string Token, string Email, string FullName, string Role, DateTime ExpiresAt);
+public record RefreshRequest(string RefreshToken);
+
+public record TokenResponse(
+    string AccessToken,
+    string RefreshToken,
+    string Username,
+    string FullName,
+    IEnumerable<RoleDto> Roles,
+    IEnumerable<PermissionDto> DirectPermissions,
+    IEnumerable<string> ResolvedPermissionIds,
+    DateTime ExpiresAt);

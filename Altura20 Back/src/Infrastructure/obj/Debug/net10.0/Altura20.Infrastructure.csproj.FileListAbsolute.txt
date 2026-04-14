@@ -17,3 +17,4 @@ C:\Altura20 Claude\Altura20 Back\src\Infrastructure\obj\Debug\net10.0\refint\Alt
 C:\Altura20 Claude\Altura20 Back\src\Infrastructure\obj\Debug\net10.0\Altura20.Infrastructure.pdb
 C:\Altura20 Claude\Altura20 Back\src\Infrastructure\obj\Debug\net10.0\Altura20.Infrastructure.genruntimeconfig.cache
 C:\Altura20 Claude\Altura20 Back\src\Infrastructure\obj\Debug\net10.0\ref\Altura20.Infrastructure.dll
+C:\Altura20 Claude\Altura20 Back\src\Infrastructure\obj\Debug\net10.0\Altura20.Infrastructure.sourcelink.json

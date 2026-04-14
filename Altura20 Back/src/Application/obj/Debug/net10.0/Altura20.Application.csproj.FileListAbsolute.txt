@@ -13,3 +13,4 @@ C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Appl
 C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\refint\Altura20.Application.dll
 C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.pdb
 C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\ref\Altura20.Application.dll
+C:\Altura20 Claude\Altura20 Back\src\Application\obj\Debug\net10.0\Altura20.Application.sourcelink.json

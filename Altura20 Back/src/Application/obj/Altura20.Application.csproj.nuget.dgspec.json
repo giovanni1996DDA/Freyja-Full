@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj": {}
+    "C:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj": {}
   },
   "projects": {
-    "c:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj": {
+    "C:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj",
+        "projectUniqueName": "C:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj",
         "projectName": "Altura20.Application",
-        "projectPath": "c:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj",
+        "projectPath": "C:\\Altura20 Claude\\Altura20 Back\\src\\Application\\Altura20.Application.csproj",
         "packagesPath": "C:\\Users\\JUAN_\\.nuget\\packages\\",
-        "outputPath": "c:\\Altura20 Claude\\Altura20 Back\\src\\Application\\obj\\",
+        "outputPath": "C:\\Altura20 Claude\\Altura20 Back\\src\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

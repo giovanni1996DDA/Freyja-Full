@@ -7,7 +7,7 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
     public UpdateProductCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("A valid Id is required.");
+            .NotEqual(Guid.Empty).WithMessage("A valid Id is required.");
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.")
